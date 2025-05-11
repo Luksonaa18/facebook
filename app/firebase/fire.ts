@@ -1,24 +1,18 @@
-// lib/firebase.ts (or firebaseConfig.ts)
-import { initializeApp, getApps, getApp } from "firebase/app";
 
-import { getAuth } from "firebase/auth";
+import { initializeApp } from "firebase/app";
+import { getAnalytics } from "firebase/analytics";
 
-// Firebase config using environment variables
+
 const firebaseConfig = {
-  apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
-  authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
-  projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
-  storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
-  messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
-  appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
-  measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID,
+  apiKey: "AIzaSyDuCvq61u2Bks9vdv5Ek5zg2zrRJoJCwp8",
+  authDomain: "fbclone1-35e75.firebaseapp.com",
+  projectId: "fbclone1-35e75",
+  storageBucket: "fbclone1-35e75.firebasestorage.app",
+  messagingSenderId: "891502932129",
+  appId: "1:891502932129:web:2fa7f76a0b39504e0a80e0",
+  measurementId: "G-1YXB14RZDP"
 };
 
-// Prevent reinitialization on hot reload
-const app = getApps().length ? getApp() : initializeApp(firebaseConfig);
-
-// Optionally load analytics only if supported (avoids SSR issues)
-
-
-export const auth = getAuth(app);
-export { app };
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+const analytics = getAnalytics(app);
