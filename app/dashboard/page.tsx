@@ -8,15 +8,31 @@ import { IoSettings } from "react-icons/io5";
 import { FaArrowDown } from "react-icons/fa6";
 import { FaUser } from "react-icons/fa6";
 import { useThemeStore } from "../zustand";
-
+import { RiHome5Fill } from "react-icons/ri";
+import { FaUserFriends } from "react-icons/fa";
+import { MdOutlineConnectedTv } from "react-icons/md";
+import { FaFacebookMessenger } from "react-icons/fa";
+import { IoMdNotificationsOutline } from "react-icons/io";
+import { CiShop } from "react-icons/ci";
+import { IoIosAddCircle } from "react-icons/io";
+import { FaRegArrowAltCircleDown } from "react-icons/fa";
+import { useRouter } from "next/navigation";
+import userImage from "../../public/user.png";
+import PostPage from "../inner-page/page";
+import Image from "next/image";
 const Dashboard = () => {
   const [open, setOpen] = useState(false);
   const [options, setOptions] = useState(false);
+  const [isClicked, setIsClicked] = useState("");
   const { toggleDarkMode, darkMode } = useThemeStore();
+  const router = useRouter();
   const handleMenuTrigger = () => {
     setOpen(!open);
   };
-
+  const handleRedirect = (path: string) => {
+    setIsClicked(path);
+    router.push(path);
+  };
   const boxClass =
     "flex flex-col items-start justify-start p-4 h-[100px] bg-white shadow-md rounded";
 
@@ -41,8 +57,36 @@ const Dashboard = () => {
             </div>
           </div>
         </nav>
+        <div className="flex felx-row w-full justify-evenly p-4 gap-3">
+          <RiHome5Fill
+            onClick={() => handleRedirect("/sign-in")}
+            className={`text-2xl ${
+              isClicked === "/home" ? "text-blue-600" : "text-gray-400"
+            }`}
+          />
+          <FaUserFriends
+            onClick={() => handleRedirect("/friends")}
+            className="text-2xl text-gray-400"
+          />
+          <FaFacebookMessenger
+            onClick={() => handleRedirect("/friends")}
+            className="text-2xl text-gray-400"
+          />
+          <MdOutlineConnectedTv
+            onClick={() => handleRedirect("/friends")}
+            className="text-2xl text-gray-400"
+          />
+          <IoMdNotificationsOutline
+            onClick={() => handleRedirect("/friends")}
+            className="text-gray-400 text-2xl"
+          />
+          <CiShop
+            onClick={() => handleRedirect("/friends")}
+            className="text-2xl text-gray-400"
+          />
+        </div>
       </header>
-
+      <PostPage />
       {open && (
         <motion.div
           initial={{ opacity: 0, x: -100 }}
@@ -68,8 +112,31 @@ const Dashboard = () => {
             />
             <h1 className="ml-4">Menu</h1>
           </motion.div>
-
-          <div className="mt-20 p-4 grid grid-cols-2 gap-4">
+          <motion.div className="w-full  flex flex-col p-4 gap-1 mt-15">
+            <div className="flex bg-white w-full h-20 px-5 flex-row items-center justify-between">
+              <div className="flex flex-row items-center gap-2">
+                <Image
+                  src={userImage}
+                  alt="User"
+                  width={40}
+                  height={40}
+                  className="rounded-full"
+                />
+                <span>Luka Zhozhadze</span>
+              </div>
+              <FaRegArrowAltCircleDown className="text-xl text-gray-400" />
+            </div>
+            <div className="flex bg-white w-full h-20 px-5 flex-row items-center justify-between">
+              <div className="flex flex-row items-center gap-2">
+                <IoIosAddCircle
+                  onClick={() => router.push("/sign-up")}
+                  className="text-xl text-gray-400"
+                />
+                <span>Create new account</span>
+              </div>
+            </div>
+          </motion.div>
+          <div className="p-4 grid grid-cols-2 gap-4">
             <motion.div
               whileHover={{ scale: 1.03, y: -10 }}
               whileTap={{ scale: 0.97 }}
