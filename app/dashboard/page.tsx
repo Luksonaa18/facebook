@@ -20,6 +20,7 @@ import { useRouter } from "next/navigation";
 import userImage from "../../public/user.png";
 import PostPage from "../inner-page/page";
 import Image from "next/image";
+import { usePostStore } from "../zustand1";
 const Dashboard = () => {
   const [open, setOpen] = useState(false);
   const [options, setOptions] = useState(false);
@@ -33,6 +34,7 @@ const Dashboard = () => {
     setIsClicked(path);
     router.push(path);
   };
+  const addpost = usePostStore((state) => state.posts);
   const boxClass =
     "flex flex-col items-start justify-start p-4 h-[100px] bg-white shadow-md rounded";
 
@@ -57,6 +59,13 @@ const Dashboard = () => {
             </div>
           </div>
         </nav>
+        <div className="absolute top-15 left-12">
+          {addpost.length > 0 && (
+            <div className="w-[15px] h-[15px] flex items-center justify-center rounded-full bg-red-500 text-white">
+              <span className="text-[10px]">{addpost.length}</span>
+            </div>
+          )}
+        </div>
         <div className="flex felx-row w-full justify-evenly p-4 gap-3">
           <RiHome5Fill
             onClick={() => handleRedirect("/sign-in")}
@@ -98,7 +107,7 @@ const Dashboard = () => {
             damping: 20,
             bounce: 0.3,
           }}
-          className="w-full h-screen bg-gray-100 absolute top-0 overflow-y-auto"
+          className="w-full h-screen bg-gray-100 absolute top-0  z-10"
         >
           <motion.div
             className="fixed top-0 w-full h-16 bg-white flex items-center p-4 shadow-md z-10"
