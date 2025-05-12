@@ -7,7 +7,7 @@ import { BiArrowBack } from "react-icons/bi";
 import { IoSettings } from "react-icons/io5";
 import { FaArrowDown } from "react-icons/fa6";
 import { FaUser } from "react-icons/fa6";
-import { useThemeStore } from "../zustand";
+
 import { RiHome5Fill } from "react-icons/ri";
 import { FaUserFriends } from "react-icons/fa";
 import { MdOutlineConnectedTv } from "react-icons/md";
@@ -25,7 +25,6 @@ const Dashboard = () => {
   const [open, setOpen] = useState(false);
   const [options, setOptions] = useState(false);
   const [isClicked, setIsClicked] = useState("");
-  const { toggleDarkMode, darkMode } = useThemeStore();
   const router = useRouter();
   const handleMenuTrigger = () => {
     setOpen(!open);

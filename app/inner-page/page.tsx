@@ -79,10 +79,7 @@ const PostPage = () => {
             style={{ marginTop: "14px" }}
           >
             <SwiperSlide style={slideStyle}>
-              <motion.div
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-              >
+              <motion.div>
                 <Image className="rounded-2xl" src={user} alt="user" fill />
                 <span className="text-white font-bold absolute bottom-1.5">
                   Nika <br /> НИКА
@@ -90,10 +87,7 @@ const PostPage = () => {
               </motion.div>
             </SwiperSlide>
             <SwiperSlide style={slideStyle}>
-              <motion.div
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-              >
+              <motion.div>
                 <Image src={ppr} alt="ppr" fill className="rounded-2xl" />
                 <span className="text-white font-bold absolute bottom-1.5">
                   {" "}
@@ -103,10 +97,7 @@ const PostPage = () => {
               </motion.div>
             </SwiperSlide>
             <SwiperSlide style={slideStyle}>
-              <motion.div
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-              >
+              <motion.div>
                 <Image className="rounded-2xl" src={drake} alt="drake" fill />
                 <span className="text-white font-bold absolute bottom-1.5">
                   Badri <br /> Asambadze
@@ -114,10 +105,7 @@ const PostPage = () => {
               </motion.div>
             </SwiperSlide>
             <SwiperSlide style={slideStyle}>
-              <motion.div
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-              >
+              <motion.div>
                 <Image src={girl} className="rounded-2xl" alt="girl" fill />
                 <span className="text-white font-bold absolute bottom-1.5">
                   Anuki <br /> Qobuleti
@@ -130,7 +118,7 @@ const PostPage = () => {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.4 }}
-          className="container mx-auto p-4"
+          className="container mx-auto p-4 absolute"
         >
           <h1 className="text-2xl font-bold">All Posts</h1>
 
@@ -140,7 +128,7 @@ const PostPage = () => {
             posts.map((post, index) => (
               <motion.div
                 key={index}
-                className="bg-white p-4 mt-4 shadow-lg rounded-lg"
+                className="bg-white p-4 mt-4 shadow-lg rounded-lg -z-50"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ duration: 0.4 }}
@@ -165,7 +153,7 @@ const PostPage = () => {
                     </span>
                   </div>
                 </div>
-                <p className="mt-2">{post.comment}</p>
+                <p className="mt-2 overflow-auto">{post.comment}</p>
                 {post.image && (
                   <img
                     src={post.image}
