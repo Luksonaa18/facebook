@@ -1,6 +1,6 @@
 "use client";
 import { motion } from "framer-motion";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { FaSearch } from "react-icons/fa";
 import { IoMenu } from "react-icons/io5";
 import { BiArrowBack } from "react-icons/bi";
@@ -21,7 +21,9 @@ import userImage from "../../public/user.png";
 import PostPage from "../inner-page/page";
 import Image from "next/image";
 import { usePostStore } from "../zustand1";
+import { useAuthStore } from "../authzustand";
 const Dashboard = () => {
+  const { user, loading } = useAuthStore();
   const [open, setOpen] = useState(false);
   const [options, setOptions] = useState(false);
   const [isClicked, setIsClicked] = useState("");
@@ -36,7 +38,11 @@ const Dashboard = () => {
   const addpost = usePostStore((state) => state.posts);
   const boxClass =
     "flex flex-col items-start justify-start p-4 h-[100px] bg-white shadow-md rounded";
-
+  useEffect(() => {
+    if (!loading && !user) {
+      router.push("/sign-in");
+    }
+  }, [user, loading, router]);
   return (
     <>
       <header>

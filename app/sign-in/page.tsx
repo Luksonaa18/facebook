@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../firebase/fire";
@@ -8,6 +8,7 @@ import { useRouter } from "next/navigation";
 import { FaFacebook } from "react-icons/fa";
 import { FaMeta } from "react-icons/fa6";
 import { motion } from "framer-motion";
+import { useAuthStore } from "../authzustand";
 
 type SignInData = {
   email: string;
@@ -16,13 +17,19 @@ type SignInData = {
 
 const SignInForm: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
+  const { loading, user } = useAuthStore();
+  const router = useRouter();
+  useEffect(() => {
+    if (!loading && !user) {
+      router.push("/sign-in");
+    }
+  }, [router, loading, user]);
   const {
     register,
     handleSubmit,
     formState: { errors },
     reset,
   } = useForm<SignInData>();
-  const router = useRouter();
 
   const onSubmit = async (data: SignInData) => {
     setIsLoading(true);
@@ -132,7 +139,10 @@ const SignInForm: React.FC = () => {
             </motion.button>
 
             <div className="text-center mt-4">
-              <a href="#" className="text-blue-600 font-medium text-sm cursor-pointer">
+              <a
+                href="#"
+                className="text-blue-600 font-medium text-sm cursor-pointer"
+              >
                 Forgotten password?
               </a>
             </div>
