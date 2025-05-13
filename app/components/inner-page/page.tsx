@@ -1,22 +1,22 @@
 "use client";
 import Image from "next/image";
 import React from "react";
-
+import { useAuthState } from "react-firebase-hooks/auth";
 import { FaImages } from "react-icons/fa";
-import userImage from "../../public/user.png";
+import userImage from "../../../public/user.png";
 import { BiLike } from "react-icons/bi";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { FaRegComment } from "react-icons/fa";
 import "swiper/css";
 import { Navigation, Mousewheel, Keyboard } from "swiper/modules";
-import { motion, AnimatePresence } from "framer-motion";
-import { redirect } from "next/navigation";
+import { motion } from "framer-motion";
+import { redirect, useRouter } from "next/navigation";
 import { formatDistanceToNow } from "date-fns"; // Import the correct function
-import { usePostStore } from "../zustand1"; // Import Zustand store
-import user from "../../public/user.jpeg";
-import ppr from "../../public/ppr.jpeg";
-import drake from "../../public/images.jpeg";
-import girl from "../../public/images (1).jpeg";
+import { usePostStore } from "../../zustand1"; // Import Zustand store
+import user from "../../../public/user.jpeg";
+import ppr from "../../../public/ppr.jpeg";
+import drake from "../../../public/images.jpeg";
+import girl from "../../../public/images (1).jpeg";
 const PostPage = () => {
   const slideStyle = {
     width: "170px",

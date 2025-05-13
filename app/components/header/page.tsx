@@ -1,48 +1,48 @@
 "use client";
+import { usePostStore } from "@/app/zustand1";
 import { motion } from "framer-motion";
-import React, { useEffect, useState } from "react";
-import { FaSearch } from "react-icons/fa";
-import { IoMenu } from "react-icons/io5";
-import { BiArrowBack } from "react-icons/bi";
-import { IoSettings } from "react-icons/io5";
-import { FaArrowDown } from "react-icons/fa6";
-import { FaUser } from "react-icons/fa6";
 
-import { RiHome5Fill } from "react-icons/ri";
-import { FaUserFriends } from "react-icons/fa";
-import { MdOutlineConnectedTv } from "react-icons/md";
-import { FaFacebookMessenger } from "react-icons/fa";
-import { IoMdNotificationsOutline } from "react-icons/io";
+import React, { useState } from "react";
+import { BiArrowBack } from "react-icons/bi";
 import { CiShop } from "react-icons/ci";
-import { IoIosAddCircle } from "react-icons/io";
-import { FaRegArrowAltCircleDown } from "react-icons/fa";
-import { useRouter } from "next/navigation";
-import userImage from "../../public/user.png";
-import PostPage from "../inner-page/page";
+import messenger from "../../../public/mess.png";
+import userImage from "../../../public/user.jpeg";
+import reels from "../../../public/reels.png";
+import {
+  FaSearch,
+  FaUserFriends,
+  FaFacebookMessenger,
+  FaRegArrowAltCircleDown,
+  FaArrowDown,
+  FaUser,
+} from "react-icons/fa";
+import { IoMdNotificationsOutline, IoIosAddCircle } from "react-icons/io";
+import { IoMenu, IoSettings } from "react-icons/io5";
+import {
+  MdOutlineConnectedTv,
+  MdGroups,
+  MdOutlineLiveTv,
+} from "react-icons/md";
+import { RiHome5Fill } from "react-icons/ri";
 import Image from "next/image";
-import { usePostStore } from "../zustand1";
-import { useAuthStore } from "../authzustand";
-const Dashboard = () => {
-  const { user, loading } = useAuthStore();
+import { useRouter } from "next/navigation";
+
+const Header = () => {
   const [open, setOpen] = useState(false);
-  const [options, setOptions] = useState(false);
-  const [isClicked, setIsClicked] = useState("");
   const router = useRouter();
-  const handleMenuTrigger = () => {
-    setOpen(!open);
-  };
+  const [options, setOptions] = useState(false);
+  const addpost = usePostStore((state) => state.posts);
+  const [isClicked, setIsClicked] = useState("");
   const handleRedirect = (path: string) => {
     setIsClicked(path);
     router.push(path);
   };
-  const addpost = usePostStore((state) => state.posts);
+  const handleMenuTrigger = () => {
+    setOpen(!open);
+  };
   const boxClass =
     "flex flex-col items-start justify-start p-4 h-[100px] bg-white shadow-md rounded";
-  useEffect(() => {
-    if (!loading && !user) {
-      router.push("/sign-in");
-    }
-  }, [user, loading, router]);
+
   return (
     <>
       <header>
@@ -100,7 +100,6 @@ const Dashboard = () => {
           />
         </div>
       </header>
-      <PostPage />
       {open && (
         <motion.div
           initial={{ opacity: 0, x: -100 }}
@@ -112,7 +111,7 @@ const Dashboard = () => {
             damping: 20,
             bounce: 0.3,
           }}
-          className="w-full h-screen bg-gray-100 absolute top-0  z-10"
+          className="w-full  bg-gray-100 absolute top-0  z-10"
         >
           <motion.div
             className="fixed top-0 w-full h-16 bg-white flex items-center p-4 shadow-md z-10"
@@ -156,7 +155,7 @@ const Dashboard = () => {
               whileTap={{ scale: 0.97 }}
               className={boxClass}
             >
-              <h1 className="text-gray-700 font-semibold">Image</h1>
+              <Image src={reels} alt="Reels" width={30} />
               <p className="text-gray-500">Reels</p>
             </motion.div>
 
@@ -165,8 +164,13 @@ const Dashboard = () => {
               whileTap={{ scale: 0.97 }}
               className={boxClass}
             >
-              <h1 className="text-gray-700 font-semibold">Image</h1>
-              <p className="text-gray-500">Reels</p>
+              <Image
+                src={messenger}
+                alt="Messenger"
+                className="rounded-full"
+                width={30}
+              />
+              <p className="text-gray-500">Messages</p>
             </motion.div>
 
             <motion.div
@@ -174,8 +178,8 @@ const Dashboard = () => {
               whileTap={{ scale: 0.97 }}
               className={boxClass}
             >
-              <h1 className="text-gray-700 font-semibold">Image</h1>
-              <p className="text-gray-500">Reels</p>
+              <MdGroups className="text-2xl text-blue-500" />
+              <p className="text-gray-500">Groups</p>
             </motion.div>
 
             <motion.div
@@ -183,8 +187,9 @@ const Dashboard = () => {
               whileTap={{ scale: 0.97 }}
               className={boxClass}
             >
-              <h1 className="text-gray-700 font-semibold">Image</h1>
-              <p className="text-gray-500">Reels</p>
+              <MdOutlineLiveTv className="text-2xl text-blue-500" />
+
+              <p className="text-gray-500">Video</p>
             </motion.div>
             <motion.div
               whileHover={{ scale: 1.03, y: -10 }}
@@ -302,4 +307,4 @@ const Dashboard = () => {
   );
 };
 
-export default Dashboard;
+export default Header;

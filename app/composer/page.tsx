@@ -10,12 +10,14 @@ import { IoCloseSharp } from "react-icons/io5";
 import { motion, AnimatePresence } from "framer-motion";
 import { MdDelete } from "react-icons/md";
 import { FaVideo } from "react-icons/fa6";
-
+import { useAuthState } from "react-firebase-hooks/auth";
+import { auth } from "../firebase/fire";
 type FormData = {
   comment: string;
 };
 
 const ComposerPage = () => {
+  const [user, loading] = useAuthState(auth);
   const { register, handleSubmit, reset } = useForm<FormData>();
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [closed, setClosed] = useState(false);
@@ -33,9 +35,11 @@ const ComposerPage = () => {
     addPost(newPost);
     reset();
     setSelectedImage(null);
-    router.push("/dashboard");
+    router.push("/");
   };
-
+  if (!user && !loading) {
+    router.push("/sign-in");
+  }
   return (
     <main className="p-4 relative overflow-hidden">
       <motion.div
@@ -163,7 +167,7 @@ const ComposerPage = () => {
                 </span>
               </div>
               <div
-                onClick={() => router.push("/dashboard")}
+                onClick={() => router.push("/")}
                 className="flex flex-row items-center justify-center gap-2 mt-4 cursor-pointer hover:opacity-80 transition"
               >
                 <MdDelete className="text-red-600 text-3xl" />

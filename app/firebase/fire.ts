@@ -1,7 +1,7 @@
 // lib/firebase.ts (or firebaseConfig.ts)
 import { initializeApp, getApps, getApp } from "firebase/app";
 
-import { getAuth } from "firebase/auth";
+import { getAuth, signOut } from "firebase/auth";
 
 // Firebase config using environment variables
 const firebaseConfig = {
@@ -14,11 +14,7 @@ const firebaseConfig = {
   measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID,
 };
 
-// Prevent reinitialization on hot reload
 const app = getApps().length ? getApp() : initializeApp(firebaseConfig);
-
-// Optionally load analytics only if supported (avoids SSR issues)
-
 
 export const auth = getAuth(app);
 export { app };

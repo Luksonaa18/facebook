@@ -13,7 +13,6 @@ type SignUpData = {
   email: string;
   password: string;
 };
-
 const SignUpForm: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const {
@@ -30,9 +29,7 @@ const SignUpForm: React.FC = () => {
     try {
       await createUserWithEmailAndPassword(auth, data.email, data.password);
       reset();
-      setTimeout(() => {
-        router.push("/sign-in");
-      }, 2000);
+      router.push("/sign-in");
     } catch (err: any) {
       console.log(err.message || "Failed to sign up.");
     }
