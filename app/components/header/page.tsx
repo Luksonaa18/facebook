@@ -1,12 +1,12 @@
 "use client";
 import { usePostStore } from "@/app/zustand1";
 import { motion } from "framer-motion";
-
+import { BsDoorOpen } from "react-icons/bs";
 import React, { useState } from "react";
 import { BiArrowBack } from "react-icons/bi";
 import { CiShop } from "react-icons/ci";
 import messenger from "../../../public/mess.png";
-import userImage from "../../../public/user.jpeg";
+import userImage from "../../../public/user.png";
 import reels from "../../../public/reels.png";
 import {
   FaSearch,
@@ -26,6 +26,8 @@ import {
 import { RiHome5Fill } from "react-icons/ri";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
+import { signOut } from "firebase/auth";
+import { auth } from "@/app/firebase/fire";
 
 const Header = () => {
   const [open, setOpen] = useState(false);
@@ -40,6 +42,16 @@ const Header = () => {
   const handleMenuTrigger = () => {
     setOpen(!open);
   };
+  const handleLogout = async () => {
+    try {
+      await signOut(auth);
+      console.log("Signed out successfully");
+      router.push("/sign-in"); // redirect after sign out
+    } catch (error) {
+      console.error("Error signing out:", error);
+    }
+  };
+
   const boxClass =
     "flex flex-col items-start justify-start p-4 h-[100px] bg-white shadow-md rounded";
 
@@ -126,7 +138,7 @@ const Header = () => {
             <h1 className="ml-4">Menu</h1>
           </motion.div>
           <motion.div className="w-full  flex flex-col p-4 gap-1 mt-15">
-            <div className="flex bg-white w-full h-20 px-5 flex-row items-center justify-between">
+            <div className="flex bg-white w-full h-20 px-5 flex-row items-center justify-between rounded-2xl">
               <div className="flex flex-row items-center gap-2">
                 <Image
                   src={userImage}
@@ -139,7 +151,7 @@ const Header = () => {
               </div>
               <FaRegArrowAltCircleDown className="text-xl text-gray-400" />
             </div>
-            <div className="flex bg-white w-full h-20 px-5 flex-row items-center justify-between">
+            <div className="flex bg-white w-full h-20 px-5 flex-row items-center justify-between rounded-2xl">
               <div className="flex flex-row items-center gap-2">
                 <IoIosAddCircle
                   onClick={() => router.push("/sign-up")}
@@ -196,8 +208,10 @@ const Header = () => {
               whileTap={{ scale: 0.97 }}
               className={boxClass}
             >
-              <h1 className="text-gray-700 font-semibold">Image</h1>
-              <p className="text-gray-500">Reels</p>
+              <div className="text-white bg-red-500 rounded-full w-12 flex items-center text-center justify-center h-auto font-semibold">
+                LIVE
+              </div>
+              <p className="text-gray-500">Live videos</p>
             </motion.div>
             <motion.div
               whileHover={{ scale: 1.03, y: -10 }}
@@ -271,35 +285,78 @@ const Header = () => {
                 <IoSettings className="text-4xl text-gray-500" />
                 <span>Settings & privacy</span>
               </div>
-              <FaArrowDown onClick={() => setOptions((prev) => !prev)} />
+              <motion.div
+                animate={{ rotate: options ? 180 : 0 }}
+                transition={{ duration: 0.3 }}
+              >
+                <FaArrowDown
+                  onClick={() => setOptions((prev) => !prev)}
+                  className="cursor-pointer"
+                />
+              </motion.div>
             </div>
+            <hr />
+
             {options && (
-              <div className="flex flex-col p-3 gap-4">
-                <div className="flex flex-row items-center justify-start bg-white h-13 rounded-lg px-2 gap-4">
+              <motion.div
+                className="flex flex-col p-3 gap-4"
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.4 }}
+              >
+                <motion.div
+                  whileHover={{ scale: 1.03, y: -3 }}
+                  className="flex flex-row items-center justify-start bg-white h-13 rounded-lg px-2 gap-4 shadow-sm"
+                >
                   <FaUser className="text-2xl" />
                   <span>Settings</span>
-                </div>
-                <div className="flex flex-row items-center justify-start bg-white h-13 rounded-lg px-2 gap-4">
+                </motion.div>
+
+                <motion.div
+                  whileHover={{ scale: 1.03, y: -3 }}
+                  className="flex flex-row items-center justify-start bg-white h-13 rounded-lg px-2 gap-4 shadow-sm"
+                >
                   <FaUser className="text-2xl" />
                   <span>Orders and payments</span>
-                </div>
-                <div className="flex flex-row items-center justify-between bg-white h-13 rounded-lg px-2 gap-4">
+                </motion.div>
+
+                <motion.div
+                  whileHover={{ scale: 1.03, y: -3 }}
+                  className="flex flex-row items-center justify-between bg-white h-13 rounded-lg px-2 gap-4 shadow-sm"
+                >
                   <div className="flex flex-row gap-4">
                     <FaUser className="text-2xl" />
-                    <span>Dark More</span>
+                    <span>Dark Mode</span>
                   </div>
-                  <input type="checkbox" name="" id="" />
-                </div>
-                <div className="flex flex-row items-center justify-start bg-white h-13 rounded-lg px-2 gap-4">
+                  <input type="checkbox" />
+                </motion.div>
+
+                <motion.div
+                  whileHover={{ scale: 1.03, y: -3 }}
+                  className="flex flex-row items-center justify-start bg-white h-13 rounded-lg px-2 gap-4 shadow-sm"
+                >
                   <FaUser className="text-2xl" />
                   <span>Settings</span>
-                </div>
-                <div className="flex flex-row items-center justify-start bg-white h-13 rounded-lg px-2 gap-4">
+                </motion.div>
+
+                <motion.div
+                  whileHover={{ scale: 1.03, y: -3 }}
+                  className="flex flex-row items-center justify-start bg-white h-13 rounded-lg px-2 gap-4 shadow-sm"
+                >
                   <FaUser className="text-2xl" />
                   <span>Settings</span>
-                </div>
-              </div>
+                </motion.div>
+              </motion.div>
             )}
+
+            <motion.div
+              whileHover={{ scale: 1.05, x: 5 }}
+              className="flex flex-row p-2 items-center gap-5 cursor-pointer"
+              onClick={handleLogout}
+            >
+              <BsDoorOpen className="text-2xl text-gray-500" />
+              <span>Log out</span>
+            </motion.div>
           </div>
         </motion.div>
       )}

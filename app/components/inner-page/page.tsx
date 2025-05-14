@@ -17,6 +17,7 @@ import user from "../../../public/user.jpeg";
 import ppr from "../../../public/ppr.jpeg";
 import drake from "../../../public/images.jpeg";
 import girl from "../../../public/images (1).jpeg";
+import { useCommentStore } from "@/app/zustand";
 const PostPage = () => {
   const slideStyle = {
     width: "170px",
@@ -27,6 +28,9 @@ const PostPage = () => {
     marginRight: "15px",
   };
   const posts = usePostStore((state) => state.posts);
+  const router = useRouter();
+  const comment = useCommentStore((state) => state.comment);
+
   return (
     <>
       <main>
@@ -76,7 +80,7 @@ const PostPage = () => {
             keyboard={true}
             modules={[Navigation, Mousewheel, Keyboard]}
             className="mySwiper"
-            style={{ marginTop: "14px" }}
+            style={{ marginTop: "14px",padding:"1rem"}}
           >
             <SwiperSlide style={slideStyle}>
               <motion.div>
@@ -163,12 +167,15 @@ const PostPage = () => {
                 )}
                 <div className="flex flex-row w-full justify-between mt-2">
                   <div className="flex flex-row items-center gap-2 p-2">
-                    <BiLike className="text-xl" />
+                    <BiLike className="text-xl cursor-pointer" />
                     <span>Like</span>
                   </div>
-                  <div className="flex flex-row items-center gap-2 p-2">
-                    <FaRegComment className="text-xl" />
-                    <span>Comment</span>
+                  <div
+                    onClick={() => router.push("/comments-page")}
+                    className="flex flex-row items-center gap-2 p-2"
+                  >
+                    <FaRegComment className="text-xl cursor-pointer" />
+                    <span className="cursor-pointer">Comment</span>
                   </div>
                 </div>
               </motion.div>

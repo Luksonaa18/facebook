@@ -8,6 +8,7 @@ import { useRouter } from "next/navigation";
 import { FaFacebook } from "react-icons/fa";
 import { FaMeta } from "react-icons/fa6";
 import { motion } from "framer-motion";
+import Loader from "../loader";
 
 type SignUpData = {
   email: string;
@@ -37,28 +38,7 @@ const SignUpForm: React.FC = () => {
 
   return (
     <>
-      {loading && (
-        <motion.div
-          className="fixed inset-0 flex items-center justify-center bg-white z-50"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.2 }}
-        >
-          <motion.div
-            animate={{
-              scale: [1, 1.2, 1],
-              rotate: [0, 5, -5, 0],
-              transition: {
-                repeat: Infinity,
-                duration: 1,
-                ease: "easeInOut",
-              },
-            }}
-          >
-            <FaFacebook className="text-blue-600 text-6xl" />
-          </motion.div>
-        </motion.div>
-      )}
+      {loading && <Loader />}
 
       <motion.div
         className="flex flex-col items-center bg-white p-4"
