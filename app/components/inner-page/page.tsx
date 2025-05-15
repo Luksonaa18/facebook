@@ -15,10 +15,12 @@ import user from "../../../public/user.jpeg";
 import ppr from "../../../public/ppr.jpeg";
 import drake from "../../../public/images.jpeg";
 import girl from "../../../public/images (1).jpeg";
+import { useCommentStore } from "@/app/zustand";
 
 const PostPage = () => {
   const router = useRouter();
   const posts = usePostStore((state) => state.posts);
+  const comments = useCommentStore((state) => state.comment);
 
   const stories = [
     { img: user, name: "Nika" },
@@ -74,7 +76,7 @@ const PostPage = () => {
               <span>Like</span>
             </div>
             <div
-              onClick={() => router.push("/comments-page")}
+              onClick={() => router.push(`/comments-page/${post.id}`)}
               className="flex items-center space-x-1 cursor-pointer hover:text-blue-600"
             >
               <FaRegComment className="text-xl" />
@@ -129,13 +131,22 @@ const PostPage = () => {
           <div className="space-y-4">
             <div className="bg-white p-4 rounded-xl shadow-sm">
               <div className="flex items-center space-x-3 cursor-pointer">
-                <Image src={userImage} alt="user" width={40} className="rounded-full" />
-                <span className="font-medium text-gray-900">Luka Zhozhadze</span>
+                <Image
+                  src={userImage}
+                  alt="user"
+                  width={40}
+                  className="rounded-full"
+                />
+                <span className="font-medium text-gray-900">
+                  Luka Zhozhadze
+                </span>
               </div>
               <div className="mt-6 space-y-3 text-gray-700 text-sm">
                 <p className="cursor-pointer hover:text-blue-600">Friends</p>
                 <p className="cursor-pointer hover:text-blue-600">Groups</p>
-                <p className="cursor-pointer hover:text-blue-600">Marketplace</p>
+                <p className="cursor-pointer hover:text-blue-600">
+                  Marketplace
+                </p>
                 <p className="cursor-pointer hover:text-blue-600">Watch</p>
               </div>
             </div>

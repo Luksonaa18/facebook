@@ -1,6 +1,6 @@
 "use client";
 import { useCommentStore } from "@/app/zustand";
-import { usePostStore } from "../zustand1";
+import { usePostStore } from "../../zustand1";
 import { formatDistanceToNow } from "date-fns";
 import { motion } from "framer-motion";
 import { useForm } from "react-hook-form";
@@ -10,18 +10,21 @@ import { FaRegComment } from "react-icons/fa";
 import { IoIosSend } from "react-icons/io";
 import Image from "next/image";
 import React, { useRef, useState } from "react";
-import userImage from "../../public/user.png";
+import userImage from "../../../public/user.png";
 
 type FormData = {
   comment: string;
 };
+type Params = {
+  params: { id: string };
+};
 
-const Comment = () => {
+const Comment = ({ params: { id } }: Params) => {
   const addComment = useCommentStore((state) => state.addComment);
   const comments = useCommentStore((state) => state.comment);
   const posts = usePostStore((state) => state.posts);
   const router = useRouter();
-
+  console.log(id);
   const {
     register,
     reset,
@@ -44,6 +47,8 @@ const Comment = () => {
   };
 
   const handleImageClick = () => fileInputRef.current?.click();
+  const onePost = posts.filter((post) => post.id === id);
+  console.log(onePost);
 
   return (
     <main className="min-h-screen bg-[#f0f2f5] pb-28">
@@ -70,7 +75,7 @@ const Comment = () => {
             No posts yet.
           </motion.p>
         ) : (
-          posts.map((post, index) => (
+          onePost.map((post, index) => (
             <motion.div
               key={index}
               className="bg-white rounded-xl shadow-sm"
@@ -199,7 +204,8 @@ const Comment = () => {
             const file = e.target.files?.[0];
             if (file) {
               const reader = new FileReader();
-              reader.onloadend = () => setSelectedImage(reader.result as string);
+              reader.onloadend = () =>
+                setSelectedImage(reader.result as string);
               reader.readAsDataURL(file);
             }
           }}
@@ -210,7 +216,11 @@ const Comment = () => {
           {...register("comment", { required: true })}
           className="flex-1 px-4 py-2 rounded-full bg-gray-200 outline-none"
         />
-        <button type="submit" className="disabled:opacity-50" disabled={errors.comment ? true : false}>
+        <button
+          type="submit"
+          className="disabled:opacity-50"
+          disabled={errors.comment ? true : false}
+        >
           <IoIosSend className="text-2xl text-blue-500" />
         </button>
       </form>

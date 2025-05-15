@@ -33,6 +33,7 @@ import { auth } from "@/app/firebase/fire";
 import { FaFacebook, FaImages } from "react-icons/fa6";
 import { CgMenuGridO } from "react-icons/cg";
 import { useForm } from "react-hook-form";
+import { v4 as uuidv4 } from 'uuid';
 
 type FormData = {
   comment: string;
@@ -71,6 +72,7 @@ const Header = () => {
       comment: data.comment,
       date: new Date(),
       image: selectedImage,
+      id:uuidv4()
     };
 
     addPost(newPost);

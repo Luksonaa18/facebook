@@ -1,4 +1,3 @@
-// postStore.ts
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
@@ -7,6 +6,7 @@ export type Post = {
   comment: string;
   date: Date;
   image: string | null;
+  id: string;
 };
 
 type PostStore = {
@@ -16,7 +16,6 @@ type PostStore = {
   setSelectedPost: (post: Post) => void;
 };
 
-// Helper to parse the date after loading from storage
 const parsePosts = (posts: any[]): Post[] =>
   posts.map((post) => ({
     ...post,

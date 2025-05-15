@@ -12,6 +12,7 @@ import { MdDelete } from "react-icons/md";
 import { FaVideo } from "react-icons/fa6";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { auth } from "../firebase/fire";
+import { v4 as uuidv4 } from "uuid";
 
 type FormData = {
   comment: string;
@@ -21,6 +22,7 @@ const ComposerPage = () => {
   const [user, loading] = useAuthState(auth);
   const { register, handleSubmit, reset } = useForm<FormData>();
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
+  const [selectedVideo, setSelectedVideo] = useState<string | null>(null);
   const [closed, setClosed] = useState(false);
   const addPost = usePostStore((state) => state.addPost);
   const router = useRouter();
@@ -31,12 +33,26 @@ const ComposerPage = () => {
       comment: data.comment,
       date: new Date(),
       image: selectedImage,
+      video: selectedVideo,
+      id: uuidv4(),
     };
 
     addPost(newPost);
     reset();
     setSelectedImage(null);
-    router.push("/"); // Redirect to your post listing page
+    setSelectedVideo(null);
+    router.push("/");
+  };
+
+  const handleVideoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setSelectedVideo(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
   };
 
   if (!user && !loading) {
@@ -119,24 +135,77 @@ const ComposerPage = () => {
               }}
             />
           </div>
-          <div className="flex flex-row items-center gap-2">
-            <FaVideo className="text-red-600 text-xl" />
-            <span>Video (Not supported yet)</span>
+          <div className="flex items-center gap-2">
+            <label
+              htmlFor="video-upload"
+              className="cursor-pointer text-red-600 flex items-center gap-2"
+            >
+              <FaVideo className="text-xl" />
+              <span>Add a Video</span>
+            </label>
+            <input
+              id="video-upload"
+              type="file"
+              accept="video/*"
+              style={{ display: "none" }}
+              onChange={handleVideoUpload}
+            />
           </div>
         </div>
 
         {/* Image Preview Animation */}
         <AnimatePresence>
           {selectedImage && (
-            <motion.img
-              src={selectedImage}
-              alt="Selected"
-              className="mt-2 rounded shadow"
+            <motion.div
+              className="mt-2"
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.95 }}
               transition={{ duration: 0.3 }}
-            />
+            >
+              <div className="relative">
+                <img
+                  src={selectedImage}
+                  alt="Selected"
+                  className="rounded shadow w-full"
+                />
+                <button
+                  type="button"
+                  className="absolute top-2 right-2 bg-black/50 text-white p-1 rounded-full"
+                  onClick={() => setSelectedImage(null)}
+                >
+                  <IoCloseSharp className="text-lg" />
+                </button>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {/* Video Preview Animation */}
+        <AnimatePresence>
+          {selectedVideo && (
+            <motion.div
+              className="mt-2"
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              transition={{ duration: 0.3 }}
+            >
+              <div className="relative">
+                <video
+                  src={selectedVideo}
+                  controls
+                  className="rounded shadow w-full"
+                />
+                <button
+                  type="button"
+                  className="absolute top-2 right-2 bg-black/50 text-white p-1 rounded-full"
+                  onClick={() => setSelectedVideo(null)}
+                >
+                  <IoCloseSharp className="text-lg" />
+                </button>
+              </div>
+            </motion.div>
           )}
         </AnimatePresence>
 
@@ -170,7 +239,7 @@ const ComposerPage = () => {
               <div className="flex flex-col items-center gap-2">
                 <h1 className="text-lg font-semibold">Discard post?</h1>
                 <span className="text-sm text-gray-600 text-center">
-                  If you discard now, you’ll lose everything you’ve written.
+                  If you discard now, you'll lose everything you've written.
                 </span>
               </div>
               <div
@@ -184,7 +253,6 @@ const ComposerPage = () => {
           </>
         )}
       </AnimatePresence>
-
     </main>
   );
 };
