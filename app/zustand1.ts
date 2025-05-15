@@ -1,9 +1,8 @@
 // postStore.ts
 import { create } from "zustand";
-import { StorageValue } from "zustand/middleware";
 import { persist } from "zustand/middleware";
 
-type Post = {
+export type Post = {
   author: string;
   comment: string;
   date: Date;
@@ -12,7 +11,9 @@ type Post = {
 
 type PostStore = {
   posts: Post[];
+  selectedPost: Post | null;
   addPost: (post: Post) => void;
+  setSelectedPost: (post: Post) => void;
 };
 
 // Helper to parse the date after loading from storage
@@ -26,28 +27,27 @@ export const usePostStore = create<PostStore>()(
   persist(
     (set, get) => ({
       posts: [],
-      addPost: (post: Post) => {
-        set({ posts: [...get().posts, post] });
-      },
+      selectedPost: null,
+      addPost: (post: Post) => set({ posts: [...get().posts, post] }),
+      setSelectedPost: (post: Post) => set({ selectedPost: post }),
     }),
     {
       name: "posts",
       storage: {
-        getItem: (name: string): StorageValue<PostStore> | null => {
+        getItem: (name: string) => {
           if (typeof window === "undefined") return null;
           const item = localStorage.getItem(name);
           return item ? JSON.parse(item) : null;
         },
-        setItem: (name: string, value: unknown): void => {
+        setItem: (name: string, value: unknown) => {
           if (typeof window === "undefined") return;
           localStorage.setItem(name, JSON.stringify(value));
         },
-        removeItem: (name: string): void => {
+        removeItem: (name: string) => {
           if (typeof window === "undefined") return;
           localStorage.removeItem(name);
         },
       },
-      // Parse date on rehydrate
       onRehydrateStorage: () => (state) => {
         if (state?.posts) {
           state.posts = parsePosts(state.posts);

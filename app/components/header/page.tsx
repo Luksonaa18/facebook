@@ -1,6 +1,6 @@
 "use client";
 import { usePostStore } from "@/app/zustand1";
-import { motion } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import { BsDoorOpen } from "react-icons/bs";
 import React, { useState } from "react";
 import { BiArrowBack } from "react-icons/bi";
@@ -30,22 +30,25 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { signOut } from "firebase/auth";
 import { auth } from "@/app/firebase/fire";
-import { FaFacebook } from "react-icons/fa6";
+import { FaFacebook, FaImages } from "react-icons/fa6";
 import { CgMenuGridO } from "react-icons/cg";
 import { useForm } from "react-hook-form";
+
 type FormData = {
   comment: string;
 };
 
 const Header = () => {
-  const { register, handleSubmit, reset } = useForm<FormData>();
+  const { register, handleSubmit, reset, watch } = useForm<FormData>();
   const [open, setOpen] = useState(false);
+  const [logOut, setLogOut] = useState(false);
   const [makePost, setMakePost] = useState(false);
   const [menubar, setMenuBar] = useState(false);
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const router = useRouter();
   const [options, setOptions] = useState(false);
   const addpost = usePostStore((state) => state.posts);
-  const [isClicked, setIsClicked] = useState("");
+  const [isClicked, setIsClicked] = useState("/");
   const handleRedirect = (path: string) => {
     setIsClicked(path);
     router.push(path);
@@ -64,569 +67,606 @@ const Header = () => {
   };
   const handlePostAdd = (data: FormData) => {
     const newPost = {
-      author: "Luka Zhozhadze",
+      author: "John Doe",
       comment: data.comment,
       date: new Date(),
-      image: "",
+      image: selectedImage,
     };
 
     addPost(newPost);
+    setSelectedImage(null);
     reset();
+    setMakePost(false);
   };
 
   const boxClass =
-    "flex flex-col items-start justify-start p-4 h-[100px] bg-white shadow-md rounded";
+    "flex flex-col items-start justify-start p-4 h-24 bg-white shadow-sm rounded-lg";
   const { addPost, posts } = usePostStore();
 
   return (
     <>
-      <header className="sm:visible lg:hidden">
-        <nav className="sm: lg:hidden">
-          <div className="flex p-2 flex-row items-center justify-between">
-            <h1 className="text-3xl text-blue-600 font-bold">facebook</h1>
-            <div className="flex flex-row items-center gap-2">
-              <motion.div
-                whileHover={{ rotate: 360, y: -10 }}
-                transition={{ duration: 0.5 }}
-                className="text-2xl cursor-pointer"
-              >
-                <FaSearch />
-              </motion.div>
-              <IoMenu
+      {/* Mobile Header */}
+      <header className="bg-white shadow-md sticky top-0 z-30 lg:hidden">
+        <nav className="px-4 py-2">
+          <div className="flex items-center justify-between">
+            <FaFacebook className="text-blue-600 text-4xl" />
+            <div className="flex items-center space-x-4">
+              <div className="bg-gray-100 rounded-full p-2">
+                <FaSearch className="text-gray-600 text-lg" />
+              </div>
+              <div
+                className="bg-gray-100 rounded-full p-2"
                 onClick={handleMenuTrigger}
-                className="text-2xl cursor-pointer"
+              >
+                <IoMenu className="text-gray-600 text-lg" />
+              </div>
+            </div>
+          </div>
+        </nav>
+        <div className="flex justify-around border-t border-gray-200 py-2 bg-white">
+          <div
+            onClick={() => handleRedirect("/")}
+            className={`flex flex-col items-center ${
+              isClicked === "/" ? "text-blue-600" : "text-gray-500"
+            }`}
+          >
+            <RiHome5Fill className="text-2xl" />
+            <span className="text-xs mt-1">
+              {isClicked === "/" && (
+                <div className="w-6 h-0.5 bg-blue-600"></div>
+              )}
+            </span>
+          </div>
+          <div
+            onClick={() => handleRedirect("/friends")}
+            className={`flex flex-col items-center ${
+              isClicked === "/friends" ? "text-blue-600" : "text-gray-500"
+            }`}
+          >
+            <FaUserFriends className="text-2xl" />
+            <span className="text-xs mt-1">
+              {isClicked === "/friends" && (
+                <div className="w-6 h-0.5 bg-blue-600"></div>
+              )}
+            </span>
+          </div>
+          <div
+            onClick={() => handleRedirect("/watch")}
+            className={`flex flex-col items-center ${
+              isClicked === "/watch" ? "text-blue-600" : "text-gray-500"
+            }`}
+          >
+            <MdOutlineConnectedTv className="text-2xl" />
+            <span className="text-xs mt-1">
+              {isClicked === "/watch" && (
+                <div className="w-6 h-0.5 bg-blue-600"></div>
+              )}
+            </span>
+          </div>
+          <div
+            onClick={() => handleRedirect("/marketplace")}
+            className={`flex flex-col items-center ${
+              isClicked === "/marketplace" ? "text-blue-600" : "text-gray-500"
+            }`}
+          >
+            <CiShop className="text-2xl" />
+            <span className="text-xs mt-1">
+              {isClicked === "/marketplace" && (
+                <div className="w-6 h-0.5 bg-blue-600"></div>
+              )}
+            </span>
+          </div>
+          <div
+            onClick={() => handleRedirect("/notifications")}
+            className={`flex flex-col items-center ${
+              isClicked === "/notifications" ? "text-blue-600" : "text-gray-500"
+            }`}
+          >
+            <div className="relative">
+              <IoMdNotificationsOutline className="text-2xl" />
+              {addpost.length > 0 && (
+                <div className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 rounded-full flex items-center justify-center">
+                  <span className="text-white text-xs">
+                    {addpost.length > 9 ? "9+" : addpost.length}
+                  </span>
+                </div>
+              )}
+            </div>
+            <span className="text-xs mt-1">
+              {isClicked === "/notifications" && (
+                <div className="w-6 h-0.5 bg-blue-600"></div>
+              )}
+            </span>
+          </div>
+        </div>
+      </header>
+
+      {/* Desktop Header */}
+      <header className="hidden lg:block bg-white shadow-sm sticky top-0 z-30">
+        <div className="flex items-center justify-between px-4 py-2 max-w-6xl mx-auto">
+          <div className="flex items-center gap-2">
+            <FaFacebook className="text-blue-600 text-4xl" />
+            <div className="relative">
+              <FaSearch className="text-gray-400 absolute left-3 top-3" />
+              <input
+                type="text"
+                placeholder="Search Facebook"
+                className="bg-gray-100 rounded-full pl-10 pr-4 py-2 w-60 focus:outline-none"
               />
             </div>
           </div>
-        </nav>
-        <div className="absolute top-15 left-12">
-          {addpost.length > 0 && (
-            <div className="w-[15px] h-[15px] flex items-center justify-center rounded-full bg-red-500 text-white">
-              <span className="text-[10px]">{addpost.length}</span>
-            </div>
-          )}
-        </div>
-        <div className="flex felx-row w-full justify-evenly p-4 gap-3">
-          <RiHome5Fill
-            onClick={() => handleRedirect("/sign-in")}
-            className={`text-2xl ${
-              isClicked === "/home" ? "text-blue-600" : "text-gray-400"
-            }`}
-          />
-          <FaUserFriends
-            onClick={() => handleRedirect("/friends")}
-            className="text-2xl text-gray-400"
-          />
-          <FaFacebookMessenger
-            onClick={() => handleRedirect("/friends")}
-            className="text-2xl text-gray-400"
-          />
-          <MdOutlineConnectedTv
-            onClick={() => handleRedirect("/friends")}
-            className="text-2xl text-gray-400"
-          />
-          <IoMdNotificationsOutline
-            onClick={() => handleRedirect("/friends")}
-            className="text-gray-400 text-2xl"
-          />
-          <CiShop
-            onClick={() => handleRedirect("/friends")}
-            className="text-2xl text-gray-400"
-          />
-        </div>
-      </header>
-      <header className="hidden lg:flex bg-white shadow-lg h-18">
-        <nav className="flex w-full flex-row items-center justify-between px-3">
-          <div className="flex flex-row items-center gap-3.5">
-            <FaFacebook className="text-blue-600 text-4xl" />
-            <input
-              type="text"
-              placeholder="Search for facebook"
-              className="w-50 border-0 bg-gray-300 h-9 rounded-full px-4"
-            />
-          </div>
-          <div className="flex flex-row items-center justify-center w-full gap-10">
-            <RiHome5Fill
-              onClick={() => handleRedirect("/sign-in")}
-              className={`text-2xl ${
-                isClicked === "/home" ? "text-blue-600" : "text-gray-400"
-              }`}
-            />
-            <FaUserFriends
-              onClick={() => handleRedirect("/friends")}
-              className="text-3xl text-gray-400"
-            />
-            <FaFacebookMessenger
-              onClick={() => handleRedirect("/friends")}
-              className="text-3xl text-gray-400"
-            />
-            <MdOutlineConnectedTv
-              onClick={() => handleRedirect("/friends")}
-              className="text-3xl text-gray-400"
-            />
-            <IoMdNotificationsOutline
-              onClick={() => handleRedirect("/friends")}
-              className="text-gray-400 text-3xl"
-            />
-            <CiShop
-              onClick={() => handleRedirect("/friends")}
-              className="text-3xl text-gray-400"
-            />
-          </div>
-          <div className="flex flex-row items-center">
-            <CgMenuGridO
-              onClick={() => setMenuBar((prev) => !prev)}
-              className="text-3xl"
-            />
-          </div>
-        </nav>
-      </header>
-      {menubar && (
-        <motion.div
-          className="flex flex-col w-150 rounded-lg h-150 bg-gray-300 p-3 absolute z-20 right-0 overflow-y-scroll"
-          initial={{ opacity: 0, x: -100 }}
-          animate={{ opacity: 1, x: 0 }}
-          exit={{ opacity: 0, x: 100 }}
-          transition={{
-            type: "spring",
-            stiffness: 120,
-          }}
-        >
-          <h1 className="text-2xl">Menu</h1>
-          <div className="flex flex-row gap-4 items-baseline">
-            <div className="flex flex-col bg-white rounded-lg w-[50%] h-auto p-4 mt-4 overflow-y-scroll">
-              <h1 className="text-xl font-bold">Social</h1>
-              <div className="flex flex-col items-center overflow-y-auto">
-                <input
-                  type="text"
-                  className="border-1 border-gray-400 rounded-lg px-2 "
-                  placeholder="Search menu"
-                />
-                <div className="flex flex-col items-baseline">
-                  <div className="flex flex-row items-center p-2 gap-3">
-                    <Image src={event} alt="Events" width={40} />
-                    <div className="flex flex-col text-start">
-                      <h2>Events</h2>
-                      <span className="text-[10px]">
-                        Organise or find events and other things to do online
-                        and nearby.
-                      </span>
-                    </div>
-                  </div>
-                </div>
-                <div className="flex flex-col items-baseline">
-                  <div className="flex flex-row items-center p-2 gap-3">
-                    <Image src={event} alt="Events" width={40} />
-                    <div className="flex flex-col text-start">
-                      <h2>Events</h2>
-                      <span className="text-[10px]">
-                        Organise or find events and other things to do online
-                        and nearby.
-                      </span>
-                    </div>
-                  </div>
-                </div>
-                <div className="flex flex-col items-baseline">
-                  <div className="flex flex-row items-center p-2 gap-3">
-                    <Image src={event} alt="Events" width={40} />
-                    <div className="flex flex-col text-start">
-                      <h2>Events</h2>
-                      <span className="text-[10px]">
-                        Organise or find events and other things to do online
-                        and nearby.
-                      </span>
-                    </div>
-                  </div>
-                </div>
-                <div className="flex flex-col items-baseline">
-                  <div className="flex flex-row items-center p-2 gap-3">
-                    <Image src={event} alt="Events" width={40} />
-                    <div className="flex flex-col text-start">
-                      <h2>Events</h2>
-                      <span className="text-[10px]">
-                        Organise or find events and other things to do online
-                        and nearby.
-                      </span>
-                    </div>
-                  </div>
-                </div>
-                <div className="flex flex-col items-baseline">
-                  <div className="flex flex-row items-center p-2 gap-3">
-                    <Image src={event} alt="Events" width={40} />
-                    <div className="flex flex-col text-start">
-                      <h2>Events</h2>
-                      <span className="text-[10px]">
-                        Organise or find events and other things to do online
-                        and nearby.
-                      </span>
-                    </div>
-                  </div>
-                </div>
-                <div className="flex flex-col items-baseline">
-                  <div className="flex flex-row items-center p-2 gap-3">
-                    <Image src={event} alt="Events" width={40} />
-                    <div className="flex flex-col text-start">
-                      <h2>Events</h2>
-                      <span className="text-[10px]">
-                        Organise or find events and other things to do online
-                        and nearby.
-                      </span>
-                    </div>
-                  </div>
-                </div>
-                <div className="flex flex-col items-baseline">
-                  <div className="flex flex-row items-center p-2 gap-3">
-                    <Image src={event} alt="Events" width={40} />
-                    <div className="flex flex-col text-start">
-                      <h2>Events</h2>
-                      <span className="text-[10px]">
-                        Organise or find events and other things to do online
-                        and nearby.
-                      </span>
-                    </div>
-                  </div>
-                </div>
-                <div className="flex flex-col items-baseline">
-                  <div className="flex flex-row items-center p-2 gap-3">
-                    <Image src={event} alt="Events" width={40} />
-                    <div className="flex flex-col text-start">
-                      <h2>Events</h2>
-                      <span className="text-[10px]">
-                        Organise or find events and other things to do online
-                        and nearby.
-                      </span>
-                    </div>
-                  </div>
-                </div>
-                <div className="flex flex-col items-baseline">
-                  <div className="flex flex-row items-center p-2 gap-3">
-                    <Image src={event} alt="Events" width={40} />
-                    <div className="flex flex-col text-start">
-                      <h2>Events</h2>
-                      <span className="text-[10px]">
-                        Organise or find events and other things to do online
-                        and nearby.
-                      </span>
-                    </div>
-                  </div>
-                </div>
-                <div className="flex flex-col items-baseline">
-                  <div className="flex flex-row items-center p-2 gap-3">
-                    <Image src={event} alt="Events" width={40} />
-                    <div className="flex flex-col text-start">
-                      <h2>Events</h2>
-                      <span className="text-[10px]">
-                        Organise or find events and other things to do online
-                        and nearby.
-                      </span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div className="flex flex-col bg-white rounded-lg w-[50%] h-50   p-3">
-              <h1 className="text-xl font-bold">Create</h1>
-              <div className="flex flex-col items-baseline p-4">
-                <div
-                  className="flex flex-row items-center text-center gap-2"
-                  onClick={() => setMakePost((prev) => !prev)}
-                >
-                  <BsPostcardFill className="text-2xl text-gray-500" />
-                  <h1 className="text-lg">Post</h1>
-                </div>
-              </div>
-            </div>
-          </div>
-        </motion.div>
-      )}
-      {makePost && (
-        <>
-          {makePost && (
-            <motion.div
-              className="fixed inset-0 bg-black/30 backdrop-blur-sm flex items-center justify-center z-50"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-            >
-              <div className="bg-white rounded-lg shadow-lg p-6 w-full max-w-md">
-                <h2 className="text-xl font-bold mb-4">Create a Post</h2>
-                <form
-                  onSubmit={handleSubmit(handlePostAdd)}
-                  className="flex flex-col gap-4"
-                >
-                  <textarea
-                    {...register("comment", { required: true })}
-                    placeholder="What's on your mind?"
-                    className="border rounded-lg p-2 resize-none h-24"
-                  />
-                  <div className="flex justify-end gap-3">
-                    <button
-                      type="button"
-                      onClick={() => setMakePost(false)}
-                      className="px-4 py-2 bg-gray-300 text-black rounded hover:bg-gray-400"
-                    >
-                      Cancel
-                    </button>
-                    <button
-                      type="submit"
-                      className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
-                    >
-                      Post
-                    </button>
-                  </div>
-                </form>
-              </div>
-            </motion.div>
-          )}
-        </>
-      )}
 
+          <div className="flex justify-center space-x-2">
+            <div
+              onClick={() => handleRedirect("/")}
+              className={`px-10 py-3 rounded-lg hover:bg-gray-100 cursor-pointer relative ${
+                isClicked === "/" ? "text-blue-600" : "text-gray-500"
+              }`}
+            >
+              <RiHome5Fill className="text-2xl mx-auto" />
+              {isClicked === "/" && (
+                <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-blue-600"></div>
+              )}
+            </div>
+            <div
+              onClick={() => handleRedirect("/friends")}
+              className={`px-10 py-3 rounded-lg hover:bg-gray-100 cursor-pointer relative ${
+                isClicked === "/friends" ? "text-blue-600" : "text-gray-500"
+              }`}
+            >
+              <FaUserFriends className="text-2xl mx-auto" />
+              {isClicked === "/friends" && (
+                <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-blue-600"></div>
+              )}
+            </div>
+            <div
+              onClick={() => handleRedirect("/watch")}
+              className={`px-10 py-3 rounded-lg hover:bg-gray-100 cursor-pointer relative ${
+                isClicked === "/watch" ? "text-blue-600" : "text-gray-500"
+              }`}
+            >
+              <MdOutlineConnectedTv className="text-2xl mx-auto" />
+              {isClicked === "/watch" && (
+                <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-blue-600"></div>
+              )}
+            </div>
+            <div
+              onClick={() => handleRedirect("/marketplace")}
+              className={`px-10 py-3 rounded-lg hover:bg-gray-100 cursor-pointer relative ${
+                isClicked === "/marketplace" ? "text-blue-600" : "text-gray-500"
+              }`}
+            >
+              <CiShop className="text-2xl mx-auto" />
+              {isClicked === "/marketplace" && (
+                <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-blue-600"></div>
+              )}
+            </div>
+            <div
+              onClick={() => handleRedirect("/groups")}
+              className={`px-10 py-3 rounded-lg hover:bg-gray-100 cursor-pointer relative ${
+                isClicked === "/groups" ? "text-blue-600" : "text-gray-500"
+              }`}
+            >
+              <MdGroups className="text-2xl mx-auto" />
+              {isClicked === "/groups" && (
+                <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-blue-600"></div>
+              )}
+            </div>
+          </div>
+
+          <div className="flex items-center space-x-2">
+            <div
+              onClick={() => setMenuBar(!menubar)}
+              className="bg-gray-200 rounded-full p-2 cursor-pointer hover:bg-gray-300"
+            >
+              <CgMenuGridO className="text-xl text-gray-700" />
+            </div>
+            <div className="bg-gray-200 rounded-full p-2 cursor-pointer hover:bg-gray-300">
+              <FaFacebookMessenger className="text-xl text-gray-700" />
+            </div>
+            <div className="bg-gray-200 rounded-full p-2 cursor-pointer hover:bg-gray-300 relative">
+              <IoMdNotificationsOutline className="text-xl text-gray-700" />
+              {addpost.length > 0 && (
+                <div className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 rounded-full flex items-center justify-center">
+                  <span className="text-white text-xs">
+                    {addpost.length > 9 ? "9+" : addpost.length}
+                  </span>
+                </div>
+              )}
+            </div>
+            <div onClick={() => setLogOut(!logOut)} className="cursor-pointer">
+              <Image
+                src={userImage}
+                alt="user"
+                width={40}
+                height={40}
+                className="rounded-full border border-gray-300"
+              />
+            </div>
+          </div>
+        </div>
+      </header>
+
+      {/* Menu Overlay - Mobile */}
       {open && (
         <motion.div
           initial={{ opacity: 0, x: -100 }}
           animate={{ opacity: 1, x: 0 }}
           exit={{ opacity: 0, x: -100 }}
-          transition={{
-            type: "spring",
-            stiffness: 120,
-            damping: 20,
-            bounce: 0.3,
-          }}
-          className="w-full  bg-gray-100 absolute top-0  z-10"
+          transition={{ type: "spring", stiffness: 100 }}
+          className="fixed inset-0 bg-white z-50 overflow-y-auto pb-16"
         >
-          <motion.div
-            className="fixed top-0 w-full h-16 bg-white flex items-center p-4 shadow-md z-10"
-            initial={{ y: -100 }}
-            animate={{ y: 0 }}
-            transition={{ duration: 0.5 }}
-          >
+          <div className="fixed top-0 w-full bg-white flex items-center p-4 border-b">
             <BiArrowBack
               onClick={() => setOpen(false)}
-              className="text-2xl cursor-pointer hover:scale-110 transition-transform duration-200"
+              className="text-2xl mr-4 cursor-pointer"
             />
-            <h1 className="ml-4">Menu</h1>
-          </motion.div>
-          <motion.div className="w-full  flex flex-col p-4 gap-1 mt-15">
-            <div className="flex bg-white w-full h-20 px-5 flex-row items-center justify-between rounded-2xl">
-              <div className="flex flex-row items-center gap-2">
+            <h1 className="text-xl font-semibold">Menu</h1>
+          </div>
+
+          <div className="mt-16 px-4">
+            <div className="bg-white rounded-lg shadow-sm mb-4">
+              <div className="p-4 flex items-center justify-between border-b">
+                <div className="flex items-center gap-3">
+                  <Image
+                    src={userImage}
+                    alt="User"
+                    width={40}
+                    height={40}
+                    className="rounded-full"
+                  />
+                  <div>
+                    <p className="font-semibold">John Doe</p>
+                    <p className="text-xs text-gray-500">View your profile</p>
+                  </div>
+                </div>
+                <FaRegArrowAltCircleDown className="text-gray-500" />
+              </div>
+
+              <div className="p-4 flex items-center gap-3 border-b">
+                <div className="bg-gray-100 rounded-full p-2">
+                  <IoIosAddCircle className="text-xl text-blue-600" />
+                </div>
+                <p>Create new account</p>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-2 gap-3">
+              {[
+                {
+                  icon: (
+                    <Image
+                      src={messenger}
+                      alt="Messenger"
+                      width={30}
+                      height={30}
+                      className="rounded-full"
+                    />
+                  ),
+                  name: "Messages",
+                },
+                {
+                  icon: (
+                    <Image src={reels} alt="Reels" width={30} height={30} />
+                  ),
+                  name: "Reels",
+                },
+                {
+                  icon: <MdGroups className="text-2xl text-blue-500" />,
+                  name: "Groups",
+                },
+                {
+                  icon: <MdOutlineLiveTv className="text-2xl text-blue-500" />,
+                  name: "Video",
+                },
+                {
+                  icon: (
+                    <div className="text-white bg-red-500 rounded-full w-8 h-8 flex items-center justify-center text-xs font-bold">
+                      LIVE
+                    </div>
+                  ),
+                  name: "Live videos",
+                },
+                {
+                  icon: <CiShop className="text-2xl text-blue-500" />,
+                  name: "Marketplace",
+                },
+              ].map((item, index) => (
+                <motion.div
+                  key={index}
+                  whileHover={{ scale: 1.03 }}
+                  whileTap={{ scale: 0.97 }}
+                  className="bg-white p-4 rounded-lg shadow-sm flex flex-col gap-2"
+                >
+                  {item.icon}
+                  <p className="text-sm text-gray-700">{item.name}</p>
+                </motion.div>
+              ))}
+            </div>
+
+            <div className="mt-6 border-t border-gray-200 pt-4">
+              <div
+                className="flex items-center justify-between p-2"
+                onClick={() => setOptions(!options)}
+              >
+                <div className="flex items-center gap-3">
+                  <IoSettings className="text-2xl text-gray-500" />
+                  <span className="font-medium">Settings & privacy</span>
+                </div>
+                <motion.div animate={{ rotate: options ? 180 : 0 }}>
+                  <FaArrowDown className="text-gray-500" />
+                </motion.div>
+              </div>
+
+              {options && (
+                <motion.div
+                  initial={{ opacity: 0, y: -10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="space-y-2 pl-10 mt-2"
+                >
+                  {[
+                    "Settings",
+                    "Privacy Checkup",
+                    "Privacy Center",
+                    "Activity Log",
+                    "Feed Preferences",
+                    "Language",
+                  ].map((item, index) => (
+                    <motion.div
+                      key={index}
+                      whileHover={{ x: 5 }}
+                      className="p-2 rounded-md hover:bg-gray-100"
+                    >
+                      {item}
+                    </motion.div>
+                  ))}
+                </motion.div>
+              )}
+
+              <motion.div
+                whileHover={{ x: 5, backgroundColor: "#f3f4f6" }}
+                className="flex items-center gap-3 p-3 rounded-md mt-4"
+                onClick={handleLogout}
+              >
+                <BsDoorOpen className="text-2xl text-gray-500" />
+                <span className="font-medium">Log out</span>
+              </motion.div>
+            </div>
+          </div>
+        </motion.div>
+      )}
+
+      {/* Profile Dropdown - Desktop */}
+      {logOut && (
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="fixed top-16 right-4 z-40 w-80 bg-white rounded-lg shadow-lg"
+        >
+          <div className="p-3 border-b hover:bg-gray-100 rounded-t-lg cursor-pointer">
+            <div className="flex items-center gap-3">
+              <Image
+                src={userImage}
+                alt="user"
+                width={50}
+                height={50}
+                className="rounded-full border border-gray-300"
+              />
+              <div>
+                <p className="font-semibold">John Doe</p>
+                <p className="text-xs text-gray-500">See your profile</p>
+              </div>
+            </div>
+          </div>
+
+          <div className="p-2">
+            <div className="p-2 rounded-md hover:bg-gray-100 flex items-center gap-3 cursor-pointer">
+              <div className="bg-gray-200 rounded-full p-2">
+                <IoSettings className="text-xl text-gray-700" />
+              </div>
+              <span>Settings & privacy</span>
+            </div>
+
+            <div className="p-2 rounded-md hover:bg-gray-100 flex items-center gap-3 cursor-pointer">
+              <div className="bg-gray-200 rounded-full p-2">
+                <FaUser className="text-xl text-gray-700" />
+              </div>
+              <span>Help & support</span>
+            </div>
+
+            <div
+              className="p-2 rounded-md hover:bg-gray-100 flex items-center gap-3 cursor-pointer"
+              onClick={handleLogout}
+            >
+              <div className="bg-gray-200 rounded-full p-2">
+                <BsDoorOpen className="text-xl text-gray-700" />
+              </div>
+              <span>Log out</span>
+            </div>
+          </div>
+        </motion.div>
+      )}
+
+      {/* Menu Grid - Desktop */}
+      {menubar && (
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="fixed top-16 right-4 z-40 w-[360px] bg-white rounded-lg shadow-lg"
+        >
+          <div className="p-3 border-b">
+            <h3 className="font-semibold text-xl">Menu</h3>
+          </div>
+
+          <div className="grid grid-cols-2 gap-2 p-3">
+            {[
+              {
+                icon: <MdGroups className="text-2xl text-blue-500" />,
+                name: "Groups",
+              },
+              {
+                icon: (
+                  <Image
+                    src={messenger}
+                    alt="Messenger"
+                    width={24}
+                    height={24}
+                    className="rounded-full"
+                  />
+                ),
+                name: "Messages",
+              },
+              {
+                icon: <Image src={reels} alt="Reels" width={24} height={24} />,
+                name: "Reels",
+              },
+              {
+                icon: <Image src={event} alt="Events" width={24} height={24} />,
+                name: "Events",
+              },
+              {
+                icon: <MdOutlineLiveTv className="text-2xl text-blue-500" />,
+                name: "Video",
+              },
+              {
+                icon: <CiShop className="text-2xl text-blue-500" />,
+                name: "Marketplace",
+              },
+            ].map((item, index) => (
+              <motion.div
+                key={index}
+                whileHover={{ backgroundColor: "#f3f4f6" }}
+                className="p-3 rounded-md flex items-center gap-3 cursor-pointer"
+              >
+                <div className="bg-gray-100 rounded-full p-2 flex items-center justify-center w-10 h-10">
+                  {item.icon}
+                </div>
+                <span>{item.name}</span>
+              </motion.div>
+            ))}
+          </div>
+
+          <div
+            className="p-3 bg-gray-100 rounded-md mx-3 mb-3 flex items-center gap-2 cursor-pointer hover:bg-gray-200"
+            onClick={() => {
+              setMenuBar(false);
+              setMakePost(true);
+            }}
+          >
+            <BsPostcardFill className="text-blue-600" />
+            <span>Create a post</span>
+          </div>
+        </motion.div>
+      )}
+
+      {/* Create Post Modal */}
+      {makePost && (
+        <motion.div
+          className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          onClick={(e) => {
+            if (e.target === e.currentTarget) setMakePost(false);
+          }}
+        >
+          <motion.div
+            className="bg-white rounded-lg shadow-xl w-full max-w-md mx-4 overflow-hidden"
+            initial={{ scale: 0.9, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="border-b p-4 flex justify-between items-center">
+              <h2 className="text-xl font-bold text-center flex-1">
+                Create post
+              </h2>
+              <div
+                className="bg-gray-200 rounded-full p-2 cursor-pointer hover:bg-gray-300"
+                onClick={() => setMakePost(false)}
+              >
+                <BiArrowBack className="text-lg" />
+              </div>
+            </div>
+
+            <div className="p-4">
+              <div className="flex items-center gap-2 mb-4">
                 <Image
                   src={userImage}
-                  alt="User"
+                  alt="user"
                   width={40}
                   height={40}
                   className="rounded-full"
                 />
-                <span>Luka Zhozhadze</span>
+                <div>
+                  <p className="font-semibold">John Doe</p>
+                  <div className="bg-gray-200 text-xs px-2 py-1 rounded-md flex items-center gap-1">
+                    <FaUser className="text-xs" />
+                    <span>Public</span>
+                  </div>
+                </div>
               </div>
-              <FaRegArrowAltCircleDown className="text-xl text-gray-400" />
-            </div>
-            <div className="flex bg-white w-full h-20 px-5 flex-row items-center justify-between rounded-2xl">
-              <div className="flex flex-row items-center gap-2">
-                <IoIosAddCircle
-                  onClick={() => router.push("/sign-up")}
-                  className="text-xl text-gray-400"
+
+              <form
+                onSubmit={handleSubmit(handlePostAdd)}
+                className="space-y-4"
+              >
+                <textarea
+                  {...register("comment", { required: true })}
+                  placeholder="What's on your mind, John?"
+                  className="w-full rounded-lg p-3 text-lg min-h-[120px] outline-none resize-none placeholder:text-gray-500"
                 />
-                <span>Create new account</span>
-              </div>
+
+                {selectedImage && (
+                  <div className="relative">
+                    <img
+                      src={selectedImage}
+                      alt="Selected"
+                      className="w-full rounded-lg"
+                    />
+                    <button
+                      type="button"
+                      className="absolute top-2 right-2 bg-gray-800/60 text-white rounded-full p-1"
+                      onClick={() => setSelectedImage(null)}
+                    >
+                      ✕
+                    </button>
+                  </div>
+                )}
+
+                <div className="border rounded-lg p-3 flex justify-between items-center">
+                  <span className="font-medium">Add to your post</span>
+                  <div className="flex items-center gap-2">
+                    <label htmlFor="image-upload" className="cursor-pointer">
+                      <FaImages className="text-xl text-green-500 hover:opacity-80" />
+                    </label>
+                    <input
+                      id="image-upload"
+                      type="file"
+                      accept="image/*"
+                      style={{ display: "none" }}
+                      onChange={(e) => {
+                        const file = e.target.files?.[0];
+                        if (file) {
+                          const reader = new FileReader();
+                          reader.onloadend = () => {
+                            setSelectedImage(reader.result as string);
+                          };
+                          reader.readAsDataURL(file);
+                        }
+                      }}
+                    />
+                  </div>
+                </div>
+
+                <button
+                  type="submit"
+                  className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 rounded-lg disabled:bg-blue-300 disabled:cursor-not-allowed"
+                  disabled={!watch("comment") && !selectedImage}
+                >
+                  Post
+                </button>
+              </form>
             </div>
           </motion.div>
-          <div className="p-4 grid grid-cols-2 gap-4">
-            <motion.div
-              whileHover={{ scale: 1.03, y: -10 }}
-              whileTap={{ scale: 0.97 }}
-              className={boxClass}
-            >
-              <Image src={reels} alt="Reels" width={30} />
-              <p className="text-gray-500">Reels</p>
-            </motion.div>
-
-            <motion.div
-              whileHover={{ scale: 1.03, y: -10 }}
-              whileTap={{ scale: 0.97 }}
-              className={boxClass}
-            >
-              <Image
-                src={messenger}
-                alt="Messenger"
-                className="rounded-full"
-                width={30}
-              />
-              <p className="text-gray-500">Messages</p>
-            </motion.div>
-
-            <motion.div
-              whileHover={{ scale: 1.03, y: -10 }}
-              whileTap={{ scale: 0.97 }}
-              className={boxClass}
-            >
-              <MdGroups className="text-2xl text-blue-500" />
-              <p className="text-gray-500">Groups</p>
-            </motion.div>
-
-            <motion.div
-              whileHover={{ scale: 1.03, y: -10 }}
-              whileTap={{ scale: 0.97 }}
-              className={boxClass}
-            >
-              <MdOutlineLiveTv className="text-2xl text-blue-500" />
-
-              <p className="text-gray-500">Video</p>
-            </motion.div>
-            <motion.div
-              whileHover={{ scale: 1.03, y: -10 }}
-              whileTap={{ scale: 0.97 }}
-              className={boxClass}
-            >
-              <div className="text-white bg-red-500 rounded-full w-12 flex items-center text-center justify-center h-auto font-semibold">
-                LIVE
-              </div>
-              <p className="text-gray-500">Live videos</p>
-            </motion.div>
-            <motion.div
-              whileHover={{ scale: 1.03, y: -10 }}
-              whileTap={{ scale: 0.97 }}
-              className={boxClass}
-            >
-              <h1 className="text-gray-700 font-semibold">Image</h1>
-              <p className="text-gray-500">Reels</p>
-            </motion.div>
-            <motion.div
-              whileHover={{ scale: 1.03, y: -10 }}
-              whileTap={{ scale: 0.97 }}
-              className={boxClass}
-            >
-              <h1 className="text-gray-700 font-semibold">Image</h1>
-              <p className="text-gray-500">Reels</p>
-            </motion.div>
-            <motion.div
-              whileHover={{ scale: 1.03, y: -10 }}
-              whileTap={{ scale: 0.97 }}
-              className={boxClass}
-            >
-              <h1 className="text-gray-700 font-semibold">Image</h1>
-              <p className="text-gray-500">Reels</p>
-            </motion.div>
-            <motion.div
-              whileHover={{ scale: 1.03, y: -10 }}
-              whileTap={{ scale: 0.97 }}
-              className={boxClass}
-            >
-              <h1 className="text-gray-700 font-semibold">Image</h1>
-              <p className="text-gray-500">Reels</p>
-            </motion.div>
-            <motion.div
-              whileHover={{ scale: 1.03, y: -10 }}
-              whileTap={{ scale: 0.97 }}
-              className={boxClass}
-            >
-              <h1 className="text-gray-700 font-semibold">Image</h1>
-              <p className="text-gray-500">Reels</p>
-            </motion.div>
-            <motion.div
-              whileHover={{ scale: 1.03, y: -10 }}
-              whileTap={{ scale: 0.97 }}
-              className={boxClass}
-            >
-              <h1 className="text-gray-700 font-semibold">Image</h1>
-              <p className="text-gray-500">Reels</p>
-            </motion.div>
-            <motion.div
-              whileHover={{ scale: 1.03 }}
-              whileTap={{ scale: 0.97 }}
-              className={boxClass}
-            >
-              <h1 className="text-gray-700 font-semibold">Image</h1>
-              <p className="text-gray-500">Reels</p>
-            </motion.div>
-            <motion.div
-              whileHover={{ scale: 1.03, y: -10 }}
-              whileTap={{ scale: 0.97 }}
-              className={boxClass}
-            >
-              <h1 className="text-gray-700 font-semibold">Image</h1>
-              <p className="text-gray-500">Reels</p>
-            </motion.div>
-          </div>
-          <div className="flex flex-col">
-            <hr />
-            <div className="flex p-2 flex-row items-center justify-between">
-              <div className="flex flex-row items-center justify-center gap-1.5 h-16">
-                <IoSettings className="text-4xl text-gray-500" />
-                <span>Settings & privacy</span>
-              </div>
-              <motion.div
-                animate={{ rotate: options ? 180 : 0 }}
-                transition={{ duration: 0.3 }}
-              >
-                <FaArrowDown
-                  onClick={() => setOptions((prev) => !prev)}
-                  className="cursor-pointer"
-                />
-              </motion.div>
-            </div>
-            <hr />
-
-            {options && (
-              <motion.div
-                className="flex flex-col p-3 gap-4"
-                initial={{ opacity: 0, y: -10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.4 }}
-              >
-                <motion.div
-                  whileHover={{ scale: 1.03, y: -3 }}
-                  className="flex flex-row items-center justify-start bg-white h-13 rounded-lg px-2 gap-4 shadow-sm"
-                >
-                  <FaUser className="text-2xl" />
-                  <span>Settings</span>
-                </motion.div>
-
-                <motion.div
-                  whileHover={{ scale: 1.03, y: -3 }}
-                  className="flex flex-row items-center justify-start bg-white h-13 rounded-lg px-2 gap-4 shadow-sm"
-                >
-                  <FaUser className="text-2xl" />
-                  <span>Orders and payments</span>
-                </motion.div>
-
-                <motion.div
-                  whileHover={{ scale: 1.03, y: -3 }}
-                  className="flex flex-row items-center justify-between bg-white h-13 rounded-lg px-2 gap-4 shadow-sm"
-                >
-                  <div className="flex flex-row gap-4">
-                    <FaUser className="text-2xl" />
-                    <span>Dark Mode</span>
-                  </div>
-                  <input type="checkbox" />
-                </motion.div>
-
-                <motion.div
-                  whileHover={{ scale: 1.03, y: -3 }}
-                  className="flex flex-row items-center justify-start bg-white h-13 rounded-lg px-2 gap-4 shadow-sm"
-                >
-                  <FaUser className="text-2xl" />
-                  <span>Settings</span>
-                </motion.div>
-
-                <motion.div
-                  whileHover={{ scale: 1.03, y: -3 }}
-                  className="flex flex-row items-center justify-start bg-white h-13 rounded-lg px-2 gap-4 shadow-sm"
-                >
-                  <FaUser className="text-2xl" />
-                  <span>Settings</span>
-                </motion.div>
-              </motion.div>
-            )}
-
-            <motion.div
-              whileHover={{ scale: 1.05, x: 5 }}
-              className="flex flex-row p-2 items-center gap-5 cursor-pointer"
-              onClick={handleLogout}
-            >
-              <BsDoorOpen className="text-2xl text-gray-500" />
-              <span>Log out</span>
-            </motion.div>
-          </div>
         </motion.div>
       )}
     </>
