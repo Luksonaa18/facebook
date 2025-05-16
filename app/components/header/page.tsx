@@ -315,6 +315,7 @@ const Header = () => {
                     width={40}
                     height={40}
                     className="rounded-full"
+                    onClick={() => router.push("/profile")}
                   />
                   <div>
                     <p className="font-semibold">John Doe</p>
@@ -452,6 +453,7 @@ const Header = () => {
                 width={50}
                 height={50}
                 className="rounded-full border border-gray-300"
+                onClick={() => router.push("/profile")}
               />
               <div>
                 <p className="font-semibold">John Doe</p>
@@ -596,6 +598,7 @@ const Header = () => {
                   width={40}
                   height={40}
                   className="rounded-full"
+                  onClick={() => router.push("/profile")}
                 />
                 <div>
                   <p className="font-semibold">John Doe</p>

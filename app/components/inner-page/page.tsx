@@ -46,6 +46,7 @@ const PostPage = () => {
               width={40}
               height={40}
               className="rounded-full"
+              onClick={()=>router.push("/profile")}
             />
             <div>
               <h2 className="font-semibold text-gray-900">{post.author}</h2>
@@ -99,6 +100,7 @@ const PostPage = () => {
           width={40}
           height={40}
           className="rounded-full mb-2"
+          onClick={()=>router.push("/profile")}
         />
         <span className="text-sm font-semibold">Add Story</span>
       </div>
@@ -134,6 +136,7 @@ const PostPage = () => {
                   alt="user"
                   width={40}
                   className="rounded-full"
+                  onClick={()=>router.push("/profile")}
                 />
                 <span className="font-medium text-gray-900">
                   Luka Zhozhadze
@@ -167,6 +170,7 @@ const PostPage = () => {
                 width={40}
                 height={40}
                 className="rounded-full"
+                onClick={()=>router.push("/profile")}
               />
               <input
                 type="text"

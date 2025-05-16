@@ -1,5 +1,5 @@
 import { use } from "react";
-import Comment from "../../components/comment/Comment";
+import Comment from "../../comment/page";
 
 type PageProps = {
   params: Promise<{ id: string }>;

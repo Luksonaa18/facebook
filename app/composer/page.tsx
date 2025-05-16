@@ -80,7 +80,7 @@ const ComposerPage = () => {
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.1 }}
       >
-        <Image src={userImage} alt="user" width={50} className="rounded-full" />
+        <Image src={userImage} alt="user" width={50} className="rounded-full" onClick={()=>router.push("/profile")}/>
         <h1 className="text-2xl">{user?.displayName || "Luka Zhozhadze"}</h1>
       </motion.div>
 

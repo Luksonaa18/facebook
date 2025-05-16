@@ -1,6 +1,6 @@
 "use client";
 import { useCommentStore } from "@/app/zustand";
-import { usePostStore } from "../../../app/zustand1";
+import { usePostStore } from "../zustand1";
 import { formatDistanceToNow } from "date-fns";
 import { motion } from "framer-motion";
 import { useForm } from "react-hook-form";
@@ -10,7 +10,7 @@ import { FaRegComment } from "react-icons/fa";
 import { IoIosSend } from "react-icons/io";
 import Image from "next/image";
 import React, { useRef, useState } from "react";
-import userImage from "../../../public/user.png";
+import userImage from "../../public/user.png";
 
 type FormData = {
   comment: string;
