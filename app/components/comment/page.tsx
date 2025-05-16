@@ -10,7 +10,7 @@ import { FaRegComment } from "react-icons/fa";
 import { IoIosSend } from "react-icons/io";
 import Image from "next/image";
 import React, { useRef, useState } from "react";
-import userImage from "../../public/user.png";
+import userImage from "../../../public/user.png";
 
 type FormData = {
   comment: string;
