@@ -16,11 +16,11 @@ type FormData = {
   comment: string;
 };
 
-type CommentProps = {
+export type CommentProps = {
   id: string;
 };
 
-const Comment = ({ id }: CommentProps) => {
+export default function Comment({ id }: CommentProps) {
   const addComment = useCommentStore((state) => state.addComment);
   const comments = useCommentStore((state) => state.comment);
   const posts = usePostStore((state) => state.posts);
@@ -226,6 +226,4 @@ const Comment = ({ id }: CommentProps) => {
       </form>
     </main>
   );
-};
-
-export default Comment;
+}
