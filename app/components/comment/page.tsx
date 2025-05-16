@@ -1,6 +1,6 @@
 "use client";
 import { useCommentStore } from "@/app/zustand";
-import { usePostStore } from "../zustand1";
+import { usePostStore } from "../../zustand1";
 import { formatDistanceToNow } from "date-fns";
 import { motion } from "framer-motion";
 import { useForm } from "react-hook-form";
