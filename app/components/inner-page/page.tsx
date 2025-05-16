@@ -15,12 +15,10 @@ import user from "../../../public/user.jpeg";
 import ppr from "../../../public/ppr.jpeg";
 import drake from "../../../public/images.jpeg";
 import girl from "../../../public/images (1).jpeg";
-import { useCommentStore } from "@/app/zustand";
 
 const PostPage = () => {
   const router = useRouter();
   const posts = usePostStore((state) => state.posts);
-  const comments = useCommentStore((state) => state.comment);
 
   const stories = [
     { img: user, name: "Nika" },

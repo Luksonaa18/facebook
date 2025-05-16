@@ -15,16 +15,17 @@ import userImage from "../../../public/user.png";
 type FormData = {
   comment: string;
 };
-type Params = {
-  params: { id: string };
+
+type CommentProps = {
+  id: string;
 };
 
-const Comment = ({ params: { id } }: Params) => {
+const Comment = ({ id }: CommentProps) => {
   const addComment = useCommentStore((state) => state.addComment);
   const comments = useCommentStore((state) => state.comment);
   const posts = usePostStore((state) => state.posts);
   const router = useRouter();
-  console.log(id);
+
   const {
     register,
     reset,
@@ -48,11 +49,9 @@ const Comment = ({ params: { id } }: Params) => {
 
   const handleImageClick = () => fileInputRef.current?.click();
   const onePost = posts.filter((post) => post.id === id);
-  console.log(onePost);
 
   return (
     <main className="min-h-screen bg-[#f0f2f5] pb-28">
-      {/* Header */}
       <div className="w-full h-12 bg-white fixed top-0 flex items-center justify-between px-4 shadow-sm z-10">
         <span
           className="text-blue-500 font-medium cursor-pointer"
@@ -64,7 +63,6 @@ const Comment = ({ params: { id } }: Params) => {
         <span />
       </div>
 
-      {/* Posts */}
       <div className="pt-16 px-4 space-y-6">
         {posts.length === 0 ? (
           <motion.p
@@ -128,7 +126,6 @@ const Comment = ({ params: { id } }: Params) => {
           ))
         )}
 
-        {/* Comments */}
         {comments.length === 0 ? (
           <motion.div
             initial={{ opacity: 0 }}
@@ -172,7 +169,6 @@ const Comment = ({ params: { id } }: Params) => {
         )}
       </div>
 
-      {/* Image Preview */}
       {selectedImage && (
         <div className="fixed bottom-20 left-4 right-4 bg-white p-2 rounded-lg shadow-md">
           <p className="text-sm text-gray-500 mb-1">Image preview:</p>
@@ -184,7 +180,6 @@ const Comment = ({ params: { id } }: Params) => {
         </div>
       )}
 
-      {/* Comment Input Bar */}
       <form
         onSubmit={handleSubmit(handleCommentAdd)}
         className="fixed bottom-0 w-full flex items-center bg-white border-t px-4 py-2 gap-3"
