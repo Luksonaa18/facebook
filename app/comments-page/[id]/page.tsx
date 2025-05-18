@@ -1,4 +1,4 @@
-import Comment from "../../components/comment/page";
+import Comment from "../../components/comment/Comment";
 
 type PageProps = {
   params: { id: string };
