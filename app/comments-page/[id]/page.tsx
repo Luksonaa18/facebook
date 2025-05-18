@@ -1,9 +1,9 @@
 import Comment from "../../components/comment/Comment";
 
-type PageProps = {
-  params: { id: string };
-};
+interface PageParams {
+  id: string;
+}
 
-export default function Page({ params }: PageProps) {
+export default function Page({ params }: { params: PageParams }) {
   return <Comment id={params.id} />;
 }
