@@ -227,4 +227,5 @@ const Comment = ({ id }: CommentProps) => {
     </main>
   );
 };
+
 export default Comment;
