@@ -211,7 +211,7 @@ const ComposerPage = () => {
 
         <motion.button
           type="submit"
-          className="mt-4 bg-blue-500 text-white p-2 rounded-lg hover:bg-blue-600"
+          className="mt-4 w-30 bg-blue-500 text-white p-2 rounded-lg hover:bg-blue-600"
           whileTap={{ scale: 0.95 }}
         >
           Post

@@ -111,7 +111,7 @@ const Header = () => {
               isClicked === "/" ? "text-blue-600" : "text-gray-500"
             }`}
           >
-            <RiHome5Fill className="text-2xl" />
+            <RiHome5Fill className="text-2xl cursor-pointer" />
             <span className="text-xs mt-1">
               {isClicked === "/" && (
                 <div className="w-6 h-0.5 bg-blue-600"></div>
@@ -124,7 +124,7 @@ const Header = () => {
               isClicked === "/friends" ? "text-blue-600" : "text-gray-500"
             }`}
           >
-            <FaUserFriends className="text-2xl" />
+            <FaUserFriends className="text-2xl cursor-pointer" />
             <span className="text-xs mt-1">
               {isClicked === "/friends" && (
                 <div className="w-6 h-0.5 bg-blue-600"></div>
@@ -137,7 +137,7 @@ const Header = () => {
               isClicked === "/watch" ? "text-blue-600" : "text-gray-500"
             }`}
           >
-            <MdOutlineConnectedTv className="text-2xl" />
+            <MdOutlineConnectedTv className="text-2xl cursor-pointer" />
             <span className="text-xs mt-1">
               {isClicked === "/watch" && (
                 <div className="w-6 h-0.5 bg-blue-600"></div>
@@ -150,7 +150,7 @@ const Header = () => {
               isClicked === "/marketplace" ? "text-blue-600" : "text-gray-500"
             }`}
           >
-            <CiShop className="text-2xl" />
+            <CiShop className="text-2xl cursor-pointer" />
             <span className="text-xs mt-1">
               {isClicked === "/marketplace" && (
                 <div className="w-6 h-0.5 bg-blue-600"></div>
@@ -164,7 +164,7 @@ const Header = () => {
             }`}
           >
             <div className="relative">
-              <IoMdNotificationsOutline className="text-2xl" />
+              <IoMdNotificationsOutline className="text-2xl cursor-pointer" />
               {addpost.length > 0 && (
                 <div className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 rounded-full flex items-center justify-center">
                   <span className="text-white text-xs">
@@ -204,7 +204,7 @@ const Header = () => {
                 isClicked === "/" ? "text-blue-600" : "text-gray-500"
               }`}
             >
-              <RiHome5Fill className="text-2xl mx-auto" />
+              <RiHome5Fill className="text-2xl cursor-pointer mx-auto" />
               {isClicked === "/" && (
                 <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-blue-600"></div>
               )}
@@ -215,7 +215,7 @@ const Header = () => {
                 isClicked === "/friends" ? "text-blue-600" : "text-gray-500"
               }`}
             >
-              <FaUserFriends className="text-2xl mx-auto" />
+              <FaUserFriends className="text-2xl cursor-pointer mx-auto" />
               {isClicked === "/friends" && (
                 <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-blue-600"></div>
               )}
@@ -226,7 +226,7 @@ const Header = () => {
                 isClicked === "/watch" ? "text-blue-600" : "text-gray-500"
               }`}
             >
-              <MdOutlineConnectedTv className="text-2xl mx-auto" />
+              <MdOutlineConnectedTv className="text-2xl cursor-pointer mx-auto" />
               {isClicked === "/watch" && (
                 <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-blue-600"></div>
               )}
@@ -237,7 +237,7 @@ const Header = () => {
                 isClicked === "/marketplace" ? "text-blue-600" : "text-gray-500"
               }`}
             >
-              <CiShop className="text-2xl mx-auto" />
+              <CiShop className="text-2xl cursor-pointer mx-auto" />
               {isClicked === "/marketplace" && (
                 <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-blue-600"></div>
               )}
@@ -248,7 +248,7 @@ const Header = () => {
                 isClicked === "/groups" ? "text-blue-600" : "text-gray-500"
               }`}
             >
-              <MdGroups className="text-2xl mx-auto" />
+              <MdGroups className="text-2xl cursor-pointer mx-auto" />
               {isClicked === "/groups" && (
                 <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-blue-600"></div>
               )}
