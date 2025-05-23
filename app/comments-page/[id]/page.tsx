@@ -1,4 +1,3 @@
-
 import React from "react";
 import Comment from "../../components/comment/Comment";
 type Props = {
