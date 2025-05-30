@@ -47,7 +47,9 @@ const PostPage = () => {
               <h2 className="font-semibold text-gray-900">{post.author}</h2>
               <p className="text-xs text-gray-500">
                 {post.date
-                  ? formatDistanceToNow(new Date(post.date), { addSuffix: true })
+                  ? formatDistanceToNow(new Date(post.date), {
+                      addSuffix: true,
+                    })
                   : "Just now"}
               </p>
             </div>
@@ -117,7 +119,7 @@ const PostPage = () => {
   return (
     <main className="bg-[#f0f2f5] min-h-screen py-4 px-2 sm:px-4 md:px-6 relative">
       {/* Fixed Left Sidebar */}
-      <aside className="hidden lg:block fixed top-16 left-0 w-64 h-[calc(100vh-64px)] overflow-y-auto px-4">
+      <aside className="hidden lg:block fixed top-16 mt-4 left-0 w-70 h-[calc(100vh-64px)]  overflow-y-auto px-4">
         <div className="space-y-4">
           <div className="bg-white p-4 rounded-xl shadow-sm">
             <div className="flex items-center space-x-3 cursor-pointer">
@@ -142,7 +144,7 @@ const PostPage = () => {
       </aside>
 
       {/* Fixed Right Sidebar */}
-      <aside className="hidden lg:block fixed top-16 right-0 w-64 h-[calc(100vh-64px)] overflow-y-auto px-4">
+      <aside className="hidden lg:block fixed top-16 right-0 w-64 h-[calc(100vh-64px)] mt-4 overflow-y-auto px-4">
         <div className="bg-white p-4 rounded-xl shadow-sm space-y-4">
           <h2 className="text-lg font-semibold text-gray-800">Sponsored</h2>
           <ul className="space-y-2 text-sm text-gray-600">

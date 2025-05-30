@@ -27,7 +27,7 @@ import {
 } from "react-icons/md";
 import { RiHome5Fill } from "react-icons/ri";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
+import { redirect, useRouter } from "next/navigation";
 import { signOut } from "firebase/auth";
 import { auth } from "@/app/firebase/fire";
 import { FaFacebook, FaImages } from "react-icons/fa6";
@@ -327,7 +327,10 @@ const Header = () => {
 
               <div className="p-4 flex items-center gap-3 border-b">
                 <div className="bg-gray-100 rounded-full p-2">
-                  <IoIosAddCircle className="text-xl text-blue-600" />
+                  <IoIosAddCircle
+                    onClick={() => redirect("/sign-up")}
+                    className="text-xl text-blue-600"
+                  />
                 </div>
                 <p>Create new account</p>
               </div>
